@@ -1,7 +1,8 @@
 {
   "name": "groceriesApp",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular",
   "id": "c8566006"
