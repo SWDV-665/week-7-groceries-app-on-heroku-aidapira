@@ -1,39 +1,39 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Grocery
+      {{title}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
   <ion-list>
-    <ion-item-sliding>
-      <ion-item>
-        <ion-label>Milk</ion-label>
-      </ion-item>
-  
-      <ion-item-options>
-        <ion-item-option color="danger">
-          <ion-icon name="trash">
-            Done
-          </ion-icon>
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  
-    <ion-item-sliding>
-      <ion-item>
-        <ion-label>Orange</ion-label>
-      </ion-item>
 
+    <ion-item-sliding *ngFor="let item of items; let i = index">
+      <ion-item>
+        <ion-label>{{item.name}}</ion-label>
+        <ion-text>{{item.quantity}}</ion-text>
+      </ion-item>
+  
       <ion-item-options>
-        <ion-item-option color="danger">
-          <ion-icon name="trash">
+        <ion-item-option color="secondary" (click)="removeItem(item, i)">
+          <ion-icon name="trash"></ion-icon>
             Done
-          </ion-icon>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end">
+    <ion-fab-button id="add-item-alert">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <ion-alert
+    trigger="add-item-alert"
+    header="Please enter item"
+    [buttons]="alertButtons"
+    [inputs]="alertInputs"
+  ></ion-alert>
 </ion-content>
