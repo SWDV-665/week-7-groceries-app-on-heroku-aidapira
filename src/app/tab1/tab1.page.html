@@ -9,13 +9,17 @@
 <ion-content padding>
   <ion-list>
 
-    <ion-item-sliding *ngFor="let item of items; let i = index">
+    <ion-item-sliding *ngFor="let item of items; let i = index" #slidingItem>
       <ion-item>
         <ion-label>{{item.name}}</ion-label>
         <ion-text>{{item.quantity}}</ion-text>
       </ion-item>
   
       <ion-item-options>
+        <ion-item-option color="primary" (click)="editItem(item, i, slidingItem)">
+          <ion-icon name="create"></ion-icon>
+            Edit
+        </ion-item-option>
         <ion-item-option color="secondary" (click)="removeItem(item, i)">
           <ion-icon name="trash"></ion-icon>
             Done
@@ -35,5 +39,10 @@
     header="Please enter item"
     [buttons]="alertButtons"
     [inputs]="alertInputs"
+  ></ion-alert>
+
+  <ion-alert
+    trigger="edit-item-alert"
+    [inputs]="editAlertInputs"
   ></ion-alert>
 </ion-content>

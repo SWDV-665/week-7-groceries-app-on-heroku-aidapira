@@ -1,5 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ToastController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
+
+
+interface EditAlertInput {
+  name: string;
+  type?: 'text' | 'number' | 'password' | 'email' | 'tel' | 'url' | 'date' | 'time';
+  placeholder: string;
+  value: string;
+}
 
 @Component({
   selector: 'app-tab1',
@@ -7,6 +16,8 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
+
+  @ViewChild('slidingItem') slidingItem: any;
 
   title = 'Grocery';
 
@@ -28,7 +39,9 @@ export class Tab1Page {
       quantity: 1
     },
   ]
-  constructor(public toastCtrl: ToastController) { }
+
+  editAlertInputs: EditAlertInput[] = [];
+  constructor(public toastCtrl: ToastController, private alertController: AlertController) { }
 
   async removeItem(item: any, index: any) {
     console.log("Removing item -- ", item)
@@ -39,6 +52,53 @@ export class Tab1Page {
     toast.present();
 
     this.items.splice(index, 1)
+  }
+
+  async editItem(item: any, index: any, slidingItem: any) {
+    console.log("Editting item -- ", item)
+    const toast = await this.toastCtrl.create({
+      message: "Editting item - " + item.name + "...",
+      duration: 3000
+    });
+    toast.present();
+
+    // Prepare editAlertInputs based on the item being edited
+    this.editAlertInputs = [
+      {
+        name: 'name',
+        placeholder: 'Name',
+        value: item.name
+      },
+      {
+        name: 'quantity',
+        type: 'number',
+        placeholder: 'Quantity',
+        value: item.quantity.toString()
+      }
+    ];
+
+    // Open the edit-item-alert
+    const alert = await this.alertController.create({
+      header: 'Please edit item',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Save',
+          handler: (data) => {
+            this.items[index].name = data.name;
+            this.items[index].quantity = parseInt(data.quantity, 10);
+
+            slidingItem.close();
+          }
+        }
+      ],
+      inputs: this.editAlertInputs
+    });
+
+    await alert.present();
   }
 
   public alertButtons = [
@@ -66,4 +126,20 @@ export class Tab1Page {
       placeholder: 'Quantity',
     },
   ];
+
+  // public editAlertButtons = [
+  //   {
+  //     text: 'Cancel',
+  //     role: 'cancel',
+  //     handler: () => {
+  //       console.log('Cancel clicked');
+  //     }
+  //   },
+  //   {
+  //     text: 'Save',
+  //     handler: (item: any) => {
+  //       this.items.push(item)
+  //     }
+  //   }];
+ 
 }
