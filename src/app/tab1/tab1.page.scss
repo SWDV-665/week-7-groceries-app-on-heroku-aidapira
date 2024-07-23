@@ -1,0 +1,5 @@
+@import '../../theme/variables.scss';
+
+h3.no-item {
+    color: map-get($colors, 'primary')
+}

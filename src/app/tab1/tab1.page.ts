@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 
+import { GroceriesServiceService } from '../providers/groceries-service/groceries-service.service';
 
 interface EditAlertInput {
   name: string;
@@ -21,27 +22,12 @@ export class Tab1Page {
 
   title = 'Grocery';
 
-  items = [
-    {
-      name: 'Milk',
-      quantity: 2
-    },
-    {
-      name: 'Bread',
-      quantity: 1
-    },
-    {
-      name: 'Banana',
-      quantity: 3
-    },
-    {
-      name: 'Sugar',
-      quantity: 1
-    },
-  ]
-
   editAlertInputs: EditAlertInput[] = [];
-  constructor(public toastCtrl: ToastController, private alertController: AlertController) { }
+  constructor(public toastCtrl: ToastController, private alertController: AlertController, public dataService: GroceriesServiceService) { }
+
+  loadItems() {
+    return this.dataService.getItems()
+  }
 
   async removeItem(item: any, index: any) {
     console.log("Removing item -- ", item)
@@ -51,7 +37,7 @@ export class Tab1Page {
     });
     toast.present();
 
-    this.items.splice(index, 1)
+    this.dataService.removeItem(index)    
   }
 
   async editItem(item: any, index: any, slidingItem: any) {
@@ -87,10 +73,8 @@ export class Tab1Page {
         },
         {
           text: 'Save',
-          handler: (data) => {
-            this.items[index].name = data.name;
-            this.items[index].quantity = parseInt(data.quantity, 10);
-
+          handler: (item) => {
+            this.dataService.editItem(item, index)
             slidingItem.close();
           }
         }
@@ -112,7 +96,7 @@ export class Tab1Page {
     {
       text: 'Save',
       handler: (item: any) => {
-        this.items.push(item)
+        this.dataService.addItem(item)
       }
     }];
   public alertInputs = [
@@ -122,24 +106,8 @@ export class Tab1Page {
     },
     {
       name: 'quantity',
-      type: 'number',
+      type: 'select',
       placeholder: 'Quantity',
     },
   ];
-
-  // public editAlertButtons = [
-  //   {
-  //     text: 'Cancel',
-  //     role: 'cancel',
-  //     handler: () => {
-  //       console.log('Cancel clicked');
-  //     }
-  //   },
-  //   {
-  //     text: 'Save',
-  //     handler: (item: any) => {
-  //       this.items.push(item)
-  //     }
-  //   }];
- 
 }
