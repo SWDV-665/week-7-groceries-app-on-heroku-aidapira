@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Edit Item</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        Cancel
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label position="floating">Name</ion-label>
+    <ion-input [(ngModel)]="item.name"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Quantity</ion-label>
+    <ion-select [(ngModel)]="item.quantity">
+      <ion-select-option value="1">One</ion-select-option>
+      <ion-select-option value="2">Two</ion-select-option>
+      <ion-select-option value="3">Three</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-button expand="block" (click)="save()">Save</ion-button>
+</ion-content>
