@@ -3,6 +3,8 @@ import { ToastController, ModalController } from '@ionic/angular';
 import { GroceriesServiceService } from '../providers/groceries-service/groceries-service.service';
 import { ItemModalPage } from '../item-modal/item-modal.page';
 
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -14,10 +16,26 @@ export class Tab1Page {
 
   title = 'Grocery';
 
-  constructor(public toastCtrl: ToastController, private modalController: ModalController, public dataService: GroceriesServiceService) { }
+  constructor(public toastCtrl: ToastController, private modalController: ModalController, public dataService: GroceriesServiceService, public socialSharing: SocialSharing) { }
 
   loadItems() {
     return this.dataService.getItems();
+  }
+
+  async shareItem(item: any, index: any) {
+    const toast = await this.toastCtrl.create({
+      message: "Sharing item - " + item.name + "...",
+      duration: 3000
+    });
+    toast.present();
+
+    let message = "Grocery item - Name: " + item.name + " - Quantity: " + item.quantity;
+    let subject = "Shared via grocery app"
+    this.socialSharing.share(message, subject).then(() => {
+      console.log('shared successfully')
+    }).catch((error) => {
+      console.log("Errored: " + error)
+    });
   }
 
   async removeItem(item: any, index: any) {
@@ -27,7 +45,7 @@ export class Tab1Page {
     });
     toast.present();
 
-    this.dataService.removeItem(index);    
+    this.dataService.removeItem(index);
   }
 
   async editItem(item: any, index: any) {
