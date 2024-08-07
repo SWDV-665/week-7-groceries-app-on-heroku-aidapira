@@ -8,18 +8,18 @@
 
 <ion-content padding>
   <ion-list>
-    <h3 class="ion-text-center no-item" *ngIf="loadItems().length === 0">
+    <h3 class="ion-text-center no-item" *ngIf="items.length === 0">
       No items available on the list
     </h3>
 
-    <ion-item-sliding *ngFor="let item of loadItems(); let i = index" #slidingItem>
+    <ion-item-sliding *ngFor="let item of items; let i = index" #slidingItem>
       <ion-item>
         <ion-label>{{item.name}}</ion-label>
         <ion-text>{{item.quantity}}</ion-text>
       </ion-item>
   
       <ion-item-options>
-        <ion-item-option color="primary" (click)="editItem(item, i)">
+        <ion-item-option color="primary" (click)="editItem(item)">
           <ion-icon name="create"></ion-icon>
           Edit
         </ion-item-option>
@@ -27,7 +27,7 @@
           <ion-icon name="share"></ion-icon>
           Share
         </ion-item-option>
-        <ion-item-option color="secondary" (click)="removeItem(item, i)">
+        <ion-item-option color="secondary" (click)="removeItem(item._id)">
           <ion-icon name="trash"></ion-icon>
           Done
         </ion-item-option>

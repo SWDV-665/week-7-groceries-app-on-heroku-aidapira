@@ -1,25 +1,44 @@
-import { Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ToastController, ModalController } from '@ionic/angular';
 import { GroceriesServiceService } from '../providers/groceries-service/groceries-service.service';
 import { ItemModalPage } from '../item-modal/item-modal.page';
 
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { GroceryModel } from '../providers/groceries-service/grocery.model';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page {
+export class Tab1Page implements OnInit {
 
   @ViewChild('slidingItem') slidingItem: any;
 
   title = 'Grocery';
+  items: GroceryModel[] = [];
+  errorMessage: string = '';
 
-  constructor(public toastCtrl: ToastController, private modalController: ModalController, public dataService: GroceriesServiceService, public socialSharing: SocialSharing) { }
+  constructor(public toastCtrl: ToastController, private modalController: ModalController, public dataService: GroceriesServiceService, public socialSharing: SocialSharing) {
+  }
+  ngOnInit(): void {
+    this.loadItems()
+  }
 
-  loadItems() {
-    return this.dataService.getItems();
+  ionViewLoaded() {
+    this.loadItems()
+  }
+
+  loadItems(): void {
+    this.dataService.getItems()
+      .subscribe({
+        next: (items) => {
+          this.items = items;
+        },
+        error: (error) => {
+          this.errorMessage = <any>error
+        }
+      })
   }
 
   async shareItem(item: any, index: any) {
@@ -38,17 +57,25 @@ export class Tab1Page {
     });
   }
 
-  async removeItem(item: any, index: any) {
+  async removeItem(id: string) {
     const toast = await this.toastCtrl.create({
-      message: "Removing item - " + item.name + "...",
+      message: "Removing item - " + id + "...",
       duration: 3000
     });
     toast.present();
 
-    this.dataService.removeItem(index);
+    this.dataService.removeItem(id)
+    .subscribe({
+      next: (item) => {
+        console.log(item)
+      },
+      error: (error) => {
+        this.errorMessage = <any>error
+      }
+    })
   }
 
-  async editItem(item: any, index: any) {
+  async editItem(item: GroceryModel) {
     const toast = await this.toastCtrl.create({
       message: "Editting item - " + item.name + "...",
       duration: 3000
@@ -62,7 +89,15 @@ export class Tab1Page {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.dataService.editItem(result.data, index);
+        this.dataService.editItem(result.data)
+        .subscribe({
+          next: (item) => {
+            console.log(item)
+          },
+          error: (error) => {
+            this.errorMessage = <any>error
+          }
+        })
         this.slidingItem.close();
       }
     });
@@ -78,7 +113,15 @@ export class Tab1Page {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.dataService.addItem(result.data);
+        this.dataService.addItem(result.data)
+        .subscribe({
+          next: (item) => {
+            console.log(item)
+          },
+          error: (error) => {
+            this.errorMessage = <any>error
+          }
+        })
       }
     });
 
